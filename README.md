@@ -1,4 +1,3 @@
 # Text-based-monopoly
-Text Based Monopoly in Python:
-Hello... 
-text-based-monopoly yeyyy! 
+Text Based Monopoly in Python
+Yey (too lazy to add desc) 
