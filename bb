@@ -31,9 +31,6 @@ class Properties:
         if not isinstance(other, Properties):
             raise ValueError("Comparison with incompatible type")
         return self.initial_cost == other.initial_cost
-            
-        
-
 
 # defines a dictionary which contains all the Property class objects for easy access to property attributes by a single number
 
@@ -53,7 +50,7 @@ def property_creation():
         Properties(name="Vine Street", initial_cost=200),
         Properties(name="Strand", initial_cost=220),
         Properties(name="Fleet Street", initial_cost=230),
-        Properties(name="Tra falgar Square", initial_cost=240),
+        Properties(name="Trafalgar Square", initial_cost=240),
         Properties(name="Leicester Square", initial_cost=250),
         Properties(name="Coventry Street", initial_cost=260),
         Properties(name="Piccadilly", initial_cost=280),
@@ -66,6 +63,9 @@ def property_creation():
     
     temp_property_list.sort()
     property_names_list = [obj.name for obj in temp_property_list]
+    property_dict = {}
+    for obj in temp_property_list:
+        property_dict[obj.name] = obj
     temp_property_list_tiered = []
     i = 0
     j = 2
@@ -78,17 +78,22 @@ def property_creation():
             j += 3
         
         elif k % 2 == 1:
-            j += 4
+            j += 2
         
         k += 1
         
-        if j > len(property_names_list) - 1:
-            j = len(property_names_list) - 1
-            temp_property_list_tiered.append(property_names_list[i:j])
+        if j >= len(property_names_list):
+            j = len(property_names_list) 
+            if property_names_list[i:j]:
+                temp_property_list_tiered.append(property_names_list[i:j])
             break
-        
-        elif j == len(property_names_list) - 1:
-            break
+
+    if len(temp_property_list_tiered[-1]) == 1 and len(temp_property_list_tiered) > 2:
+        if len(temp_property_list_tiered[-2]) == 3:
+            temp_property_list_tiered[-1].insert(0, temp_property_list_tiered[-2].pop())
+        elif len(temp_property_list_tiered[-2]) == 2:
+            temp_property_list_tiered[-1].insert(0, temp_property_list_tiered[-2].pop())
+            temp_property_list_tiered[-2].insert(0, temp_property_list_tiered[-3].pop())
     
     def tier_generator(length, alphabet=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']):
         tier_list = []
@@ -113,51 +118,7 @@ def property_creation():
         tier_sorted_property_dict[tier] = list_of_objects
         
     print(tier_sorted_property_dict)
-    '''
-    property_dict = {
-        1: Properties(name="Old Kent Road", initial_cost=60),
-        2: Properties(name="Whitechapel Road", initial_cost=80),
-        3: Properties(name="The Angel, Islington", initial_cost=100),
-        4: Properties(name="Euston Road", initial_cost=110),
-        5: Properties(name="Pentonville Road", initial_cost=130),
-        6: Properties(name="Pall Mall", initial_cost=140),
-        7: Properties(name="Whitehall", initial_cost=150),
-        8: Properties(name="Northumb'nd Avenue", initial_cost=160),
-        9: Properties(name="Bow Street", initial_cost=170),
-        10: Properties(name="Marlborough Street", initial_cost=180),
-        11: Properties(name="Vine Street", initial_cost=200),
-        12: Properties(name="Strand", initial_cost=220),
-        13: Properties(name="Fleet Street", initial_cost=230),
-        14: Properties(name="Trafalgar Square", initial_cost=240),
-        15: Properties(name="Leicester Square", initial_cost=250),
-        16: Properties(name="Coventry Street", initial_cost=260),
-        17: Properties(name="Piccadilly", initial_cost=280),
-        18: Properties(name="Regent Street", initial_cost=300),
-        19: Properties(name="Oxford Street", initial_cost=310),
-        20: Properties(name="Bond Street", initial_cost=320),
-        21: Properties(name="Park Lane", initial_cost=350),
-        22: Properties(name="Mayfair", initial_cost=400),
-    }
-    '''
-    ''' 
-    tier_sorted_property_dict = {}
-    row_sorted_property_dict = {}
-    property_position_dict = {}
-    for key, obj in property_dict.items():
-        common_attr_1 = obj.tier
-        common_attr_2 = obj.row
     
-        if common_attr_1 not in tier_sorted_property_dict:
-            tier_sorted_property_dict[common_attr_1] = []
-        tier_sorted_property_dict[common_attr_1].append(obj.name)
-    
-        if common_attr_2 not in row_sorted_property_dict:
-            row_sorted_property_dict[common_attr_2] = []
-        row_sorted_property_dict[common_attr_2].append(obj.name)
-    
-        property_position_dict[obj.position] = obj.name
-    '''
-
 property_creation()
 
 @dataclass(slots=True, kw_only=True)
