@@ -10,61 +10,116 @@ class Properties:
     position: int = None
     row: int = None
     initial_cost: float = None
-    rent_lvl_1_cost: float = None
-    rent_lvl_2_cost: float = None
-    rent_lvl_3_cost: float = None
-    rent_lvl_4_cost: float = None
-    rent_lvl_5_cost: float = None
+    base_rent_levels_list: list = field(init=False)
     current_rent_level: int = 1
     current_owner: str = "bank"
+    
+    def __post_init__(self):
+        self.base_rent_levels_list = [(round(((self.initial_cost*i/8) + ((round(self.initial_cost*((i/7)**2)/10))*10))/10)*10) for i in range(5,14,2)]
+    
+    def __lt__(self, other):
+        if not isinstance(other, Properties):
+            raise ValueError("Comparison with incompatible type")
+        return self.initial_cost < other.initial_cost
 
+    def __gt__(self, other):
+        if not isinstance(other, Properties):
+            raise ValueError("Comparison with incompatible type")
+        return self.initial_cost > other.initial_cost
+    
+    def __eq__(self, other):
+        if not isinstance(other, Properties):
+            raise ValueError("Comparison with incompatible type")
+        return self.initial_cost == other.initial_cost
 
 # defines a dictionary which contains all the Property class objects for easy access to property attributes by a single number
 
-property_dict = {
-    1: Properties(name="Old Kent Road", tier="C", position=2, row=1, initial_cost=60, rent_lvl_1_cost=70, rent_lvl_2_cost=130, rent_lvl_3_cost=220, rent_lvl_4_cost=370, rent_lvl_5_cost=750),
-    2: Properties(name="Whitechapel Road", tier="C", position=4, row=1, initial_cost=60, rent_lvl_1_cost=70, rent_lvl_2_cost=130, rent_lvl_3_cost=220, rent_lvl_4_cost=370, rent_lvl_5_cost=750),
-    3: Properties(name="The Angel, Islington", tier="C+", position=6, row=1, initial_cost=100, rent_lvl_1_cost=80, rent_lvl_2_cost=140, rent_lvl_3_cost=240, rent_lvl_4_cost=410, rent_lvl_5_cost=800),
-    4: Properties(name="Euston Road", tier="C+", position=7, row=1, initial_cost=100, rent_lvl_1_cost=80, rent_lvl_2_cost=140, rent_lvl_3_cost=240, rent_lvl_4_cost=410, rent_lvl_5_cost=800),
-    5: Properties(name="Pentonville Road", tier="C+", position=9, row=1, initial_cost=120, rent_lvl_1_cost=100, rent_lvl_2_cost=160, rent_lvl_3_cost=260, rent_lvl_4_cost=440, rent_lvl_5_cost=860),
-    6: Properties(name="Pall Mall", tier="B", position=11, row=2, initial_cost=140, rent_lvl_1_cost=110, rent_lvl_2_cost=180, rent_lvl_3_cost=290, rent_lvl_4_cost=460, rent_lvl_5_cost=900),
-    7: Properties(name="Whitehall", tier="B", position=13, row=2, initial_cost=140, rent_lvl_1_cost=110, rent_lvl_2_cost=180, rent_lvl_3_cost=290, rent_lvl_4_cost=460, rent_lvl_5_cost=900),
-    8: Properties(name="Northumb'nd Avenue", tier="B", position=14, row=2, initial_cost=160, rent_lvl_1_cost=130, rent_lvl_2_cost=200, rent_lvl_3_cost=310, rent_lvl_4_cost=490, rent_lvl_5_cost=980),
-    9: Properties(name="Bow Street", tier="B+", position=15, row=2, initial_cost=180, rent_lvl_1_cost=140, rent_lvl_2_cost=210, rent_lvl_3_cost=330, rent_lvl_4_cost=520, rent_lvl_5_cost=1000),
-    10: Properties(name="Marlborough Street", tier="B+", position=16, row=2, initial_cost=180, rent_lvl_1_cost=140, rent_lvl_2_cost=210, rent_lvl_3_cost=330, rent_lvl_4_cost=520, rent_lvl_5_cost=1000),
-    11: Properties(name="Vine Street", tier="B+", position=18, row=2, initial_cost=200, rent_lvl_1_cost=160, rent_lvl_2_cost=230, rent_lvl_3_cost=350, rent_lvl_4_cost=550, rent_lvl_5_cost=1100),
-    12: Properties(name="Strand", tier="A", position=20, row=3, initial_cost=220, rent_lvl_1_cost=170, rent_lvl_2_cost=250, rent_lvl_3_cost=380, rent_lvl_4_cost=580, rent_lvl_5_cost=1160),
-    13: Properties(name="Fleet Street", tier="A", position=22, row=3, initial_cost=220, rent_lvl_1_cost=170, rent_lvl_2_cost=250, rent_lvl_3_cost=380, rent_lvl_4_cost=580, rent_lvl_5_cost=1160),
-    14: Properties(name="Trafalgar Square", tier="A", position=23, row=3, initial_cost=240, rent_lvl_1_cost=190, rent_lvl_2_cost=270, rent_lvl_3_cost=400, rent_lvl_4_cost=610, rent_lvl_5_cost=1200),
-    15: Properties(name="Leicester Square", tier="A+", position=24, row=3, initial_cost=260, rent_lvl_1_cost=200, rent_lvl_2_cost=280, rent_lvl_3_cost=420, rent_lvl_4_cost=640, rent_lvl_5_cost=1300),
-    16: Properties(name="Coventry Street", tier="A+", position=25, row=3, initial_cost=260, rent_lvl_1_cost=200, rent_lvl_2_cost=280, rent_lvl_3_cost=420, rent_lvl_4_cost=640, rent_lvl_5_cost=1300),
-    17: Properties(name="Piccadilly", tier="A+", position=27, row=3, initial_cost=280, rent_lvl_1_cost=220, rent_lvl_2_cost=300, rent_lvl_3_cost=440, rent_lvl_4_cost=670, rent_lvl_5_cost=1340),
-    18: Properties(name="Regent Street", tier="S", position=29, row=4, initial_cost=300, rent_lvl_1_cost=230, rent_lvl_2_cost=320, rent_lvl_3_cost=460, rent_lvl_4_cost=700, rent_lvl_5_cost=1400),
-    19: Properties(name="Oxford Street", tier="S", position=31, row=4, initial_cost=300, rent_lvl_1_cost=230, rent_lvl_2_cost=320, rent_lvl_3_cost=460, rent_lvl_4_cost=700, rent_lvl_5_cost=1400),
-    20: Properties(name="Bond Street", tier="S", position=32, row=4, initial_cost=320, rent_lvl_1_cost=250, rent_lvl_2_cost=340, rent_lvl_3_cost=480, rent_lvl_4_cost=730, rent_lvl_5_cost=1440),
-    21: Properties(name="Park Lane", tier="S+", position=34, row=4, initial_cost=350, rent_lvl_1_cost=270, rent_lvl_2_cost=360, rent_lvl_3_cost=510, rent_lvl_4_cost=740, rent_lvl_5_cost=1500),
-    22: Properties(name="Mayfair", tier="S+", position=36, row=4, initial_cost=400, rent_lvl_1_cost=300, rent_lvl_2_cost=400, rent_lvl_3_cost=560, rent_lvl_4_cost=810, rent_lvl_5_cost=1600),
-}
+def property_creation():
+    
+    temp_property_list = [
+        Properties(name="Old Kent Road", initial_cost=60),
+        Properties(name="Whitechapel Road", initial_cost=80),
+        Properties(name="The Angel, Islington", initial_cost=100),
+        Properties(name="Euston Road", initial_cost=110),
+        Properties(name="Pentonville Road", initial_cost=130),
+        Properties(name="Pall Mall", initial_cost=140),
+        Properties(name="Whitehall", initial_cost=150),
+        Properties(name="Northumb'nd Avenue", initial_cost=160),
+        Properties(name="Bow Street", initial_cost=170),
+        Properties(name="Marlborough Street", initial_cost=180),
+        Properties(name="Vine Street", initial_cost=200),
+        Properties(name="Strand", initial_cost=220),
+        Properties(name="Fleet Street", initial_cost=230),
+        Properties(name="Trafalgar Square", initial_cost=240),
+        Properties(name="Leicester Square", initial_cost=250),
+        Properties(name="Coventry Street", initial_cost=260),
+        Properties(name="Piccadilly", initial_cost=280),
+        Properties(name="Regent Street", initial_cost=300),
+        Properties(name="Oxford Street", initial_cost=310),
+        Properties(name="Bond Street", initial_cost=320),
+        Properties(name="Park Lane", initial_cost=350),
+        Properties(name="Mayfair", initial_cost=400)
+        ]
+    
+    temp_property_list.sort()
+    property_names_list = [obj.name for obj in temp_property_list]
+    property_dict = {}
+    for obj in temp_property_list:
+        property_dict[obj.name] = obj
+    temp_property_list_tiered = []
+    i = 0
+    j = 2
+    k = 0
+    while True:
+        temp_property_list_tiered.append(property_names_list[i:j])
+        i = j
+        
+        if k % 2 == 0:
+            j += 3
+        
+        elif k % 2 == 1:
+            j += 2
+        
+        k += 1
+        
+        if j >= len(property_names_list):
+            j = len(property_names_list) 
+            if property_names_list[i:j]:
+                temp_property_list_tiered.append(property_names_list[i:j])
+            break
 
-tier_sorted_property_dict = {}
-row_sorted_property_dict = {}
-property_position_dict = {}
-for key, obj in property_dict.items():
-    common_attr_1 = obj.tier
-    common_attr_2 = obj.row
-
-    if common_attr_1 not in tier_sorted_property_dict:
-        tier_sorted_property_dict[common_attr_1] = []
-    tier_sorted_property_dict[common_attr_1].append(obj.name)
-
-    if common_attr_2 not in row_sorted_property_dict:
-        row_sorted_property_dict[common_attr_2] = []
-    row_sorted_property_dict[common_attr_2].append(obj.name)
-
-    property_position_dict[obj.position] = obj.name
-
-print(property_dict, tier_sorted_property_dict, row_sorted_property_dict, property_position_dict)
-
+    if len(temp_property_list_tiered[-1]) == 1 and len(temp_property_list_tiered) > 2:
+        if len(temp_property_list_tiered[-2]) == 3:
+            temp_property_list_tiered[-1].insert(0, temp_property_list_tiered[-2].pop())
+        elif len(temp_property_list_tiered[-2]) == 2:
+            temp_property_list_tiered[-1].insert(0, temp_property_list_tiered[-2].pop())
+            temp_property_list_tiered[-2].insert(0, temp_property_list_tiered[-3].pop())
+    
+    def tier_generator(length, alphabet=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']):
+        tier_list = []
+        for i in range(length):
+            index = ""
+            remainder = i
+            while remainder >= 0:
+                index = (alphabet[remainder % 26] + index).upper()
+                remainder = remainder // 26 - 1
+            tier_list.append(index)
+        return tier_list
+    
+    tier_list = tier_generator(len(temp_property_list_tiered))
+    mod_tier_list = ["S+", "S"]
+    for tier in tier_list:
+        mod_tier_list.append(tier + "+")
+        mod_tier_list.append(tier)
+    tier_list = mod_tier_list[:len(temp_property_list_tiered)]
+    tier_list = tier_list[::-1]
+    tier_sorted_property_dict = {}
+    for list_of_objects, tier in zip(temp_property_list_tiered, tier_list):           
+        tier_sorted_property_dict[tier] = list_of_objects
+        
+    print(tier_sorted_property_dict)
+    
+property_creation()
 
 @dataclass(slots=True, kw_only=True)
 class Events:
